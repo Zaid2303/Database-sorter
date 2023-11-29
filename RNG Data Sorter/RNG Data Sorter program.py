@@ -1,5 +1,6 @@
 import random
 import time
+import pandas as pd
 import matplotlib.pyplot as plt
 
 # Function to generate random arrays
@@ -70,7 +71,7 @@ def quick_sort(arr):
     comparisons += quick_sort(right)
     return comparisons
 
-# function that calculates time and comparison amount
+# Function that calculates time and comparison amount
 def measure_performance(algorithm, array):
     start_time = time.time()
     comparisons = algorithm(array)
@@ -130,23 +131,27 @@ print(f"Quick Sort (ThousandList): Execution Time: {time_quick} ms, Comparisons:
 time_quick, comparisons_quick = measure_performance(quick_sort, TenThousandList_quick)
 print(f"Quick Sort (TenThousandList): Execution Time: {time_quick} ms, Comparisons: {comparisons_quick}")
 
+print ("")
+print ("")
 
-# Function to create line charts
-def plot_performance(data_sizes, execution_times, comparisons, algorithm_name):
+# Function to create line chart for multiple algorithms
+def plot_multiple_algorithms(data_sizes, execution_times, comparisons, algorithm_names):
     plt.figure(figsize=(10, 5))
 
-    # Plot execution time
+    # Plot execution times
     plt.subplot(1, 2, 1)
-    plt.plot(data_sizes, execution_times, marker='o', label='Execution Time')
-    plt.title(f'{algorithm_name} Performance')
+    for exec_times, algorithm_name in zip(execution_times, algorithm_names):
+        plt.plot(data_sizes, exec_times, marker='x', label=algorithm_name)
+    plt.title('Algorithm Performance')
     plt.xlabel('Array Size')
     plt.ylabel('Execution Time (ms)')
     plt.legend()
 
     # Plot comparisons
     plt.subplot(1, 2, 2)
-    plt.plot(data_sizes, comparisons, marker='o', label='Comparisons')
-    plt.title(f'{algorithm_name} Comparisons')
+    for comps, algorithm_name in zip(comparisons, algorithm_names):
+        plt.plot(data_sizes, comps, marker='x', label=algorithm_name)
+    plt.title('Algorithm Comparisons')
     plt.xlabel('Array Size')
     plt.ylabel('Number of Comparisons')
     plt.legend()
@@ -160,38 +165,24 @@ def run_and_plot_sorting_algorithm(algorithm, array, size):
     time, comparisons = measure_performance(algorithm, array_copy)
     return time, comparisons
 
-# Create arrays
-data_sizes = [100, 1000, 10000]
-
-# Initialize lists to store results for each algorithm
-selection_execution_times = []
-selection_comparisons = []
-merge_execution_times = []
-merge_comparisons = []
-quick_execution_times = []
-quick_comparisons = []
-
-# Run and plot Selection Sort
+# Run and store results
+execution_times_all = []
+comparisons_all = []
 for size in data_sizes:
-    time_selection, comparisons_selection = run_and_plot_sorting_algorithm(selection_sort, generate_random_array(size), size)
-    selection_execution_times.append(time_selection)
-    selection_comparisons.append(comparisons_selection)
+    execution_times = []
+    comparisons = []
+    for algorithm, algorithm_name in zip(algorithms, algorithm_names):
+        array = generate_random_array(size)
+        exec_time, comparison = run_and_plot_sorting_algorithm(algorithm, array, size)
+        execution_times.append(exec_time)
+        comparisons.append(comparison)
 
-# Run and plot Merge Sort
-for size in data_sizes:
-    time_merge, comparisons_merge = run_and_plot_sorting_algorithm(merge_sort, generate_random_array(size), size)
-    merge_execution_times.append(time_merge)
-    merge_comparisons.append(comparisons_merge)
+        # Print results for the current algorithm and array size
+        print(f"{algorithm_name} ({size} elements): Execution Time: {exec_time} ms, Comparisons: {comparison}")
 
-# Run and plot Quick Sort
-for size in data_sizes:
-    time_quick, comparisons_quick = run_and_plot_sorting_algorithm(quick_sort, generate_random_array(size), size)
-    quick_execution_times.append(time_quick)
-    quick_comparisons.append(comparisons_quick)
+    # Append results for the current array size
+    execution_times_all.append(execution_times)
+    comparisons_all.append(comparisons)
 
-# Plot graphs for each algorithm
-plot_performance(data_sizes, selection_execution_times, selection_comparisons, 'Selection Sort')
-plot_performance(data_sizes, merge_execution_times, merge_comparisons, 'Merge Sort')
-plot_performance(data_sizes, quick_execution_times, quick_comparisons, 'Quick Sort')
-
-
+# Plot a single graph for all array sizes
+plot_multiple_algorithms(data_sizes, execution_times_all, comparisons_all, algorithm_names)
