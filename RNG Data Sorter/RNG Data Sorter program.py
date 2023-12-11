@@ -1,188 +1,195 @@
-import random
-import time
-import pandas as pd
-import matplotlib.pyplot as plt
+import random # For random num Generator
+import time # to calculate time taken
+import pandas as pd # to get information to generate graph
+import matplotlib.pyplot as plt # generated graph as a image
 
 # Function to generate random arrays
-def generate_random_array(size):
+def generateRandomArray(size):
     return [random.randint(100000, 999999) for _ in range(size)]
 
-# Sorting algorithms
+# ---------- Sorting algorithms ----------
 
 # Selection Sort Algorithm
-def selection_sort(arr):
-    comparisons = 0
-    n = len(arr)
+def selectionSort(arr):
+    comparisons = 0 # set comparrison to 0 when function called
+    n = len(arr) # array length being used
     for i in range(n):
-        min_index = i
+        minIndex = i
         for j in range(i + 1, n):
-            comparisons += 1
-            if arr[j] < arr[min_index]:
-                min_index = j
-        arr[i], arr[min_index] = arr[min_index], arr[i]
-    return comparisons
+            comparisons += 1 # everytime a comparrison is made comparrison counter increased by 1
+            if arr[j] < arr[minIndex]: # calculating the time
+                minIndex = j
+        arr[i], arr[minIndex] = arr[minIndex], arr[i]
+    return comparisons # returns number of comparrisons
 
 # Merge Sort Algorithm
-def merge_sort(arr):
-    comparisons = 0
-    if len(arr) > 1:
-        mid = len(arr) // 2
-        left_half = arr[:mid]
-        right_half = arr[mid:]
+def mergeSort(arr):
+    comparisons = 0 # set comparrison to 0 when function called
+    if len(arr) > 1: # array length being used
+        mid = len(arr) // 2 # array split in middle
+        leftHalf = arr[:mid]
+        rightHalf = arr[mid:]
 
-        comparisons += merge_sort(left_half)
-        comparisons += merge_sort(right_half)
+        # comparisons for both halves
+        comparisons += mergeSort(leftHalf) # array called for each half being split up so it is looped
+        comparisons += mergeSort(rightHalf)
 
         i = j = k = 0
+        # i = left half comparison
+        # j = right half comparrison
+        # k = amount of items in new sorted array
 
-        while i < len(left_half) and j < len(right_half):
+        while i < len(leftHalf) and j < len(rightHalf): # checking which half to check left side or right
             comparisons += 1
-            if left_half[i] < right_half[j]:
-                arr[k] = left_half[i]
+            if leftHalf[i] < rightHalf[j]:
+                arr[k] = leftHalf[i]
                 i += 1
             else:
-                arr[k] = right_half[j]
+                arr[k] = rightHalf[j]
                 j += 1
             k += 1
 
-        while i < len(left_half):
-            arr[k] = left_half[i]
+        while i < len(leftHalf):
+            arr[k] = leftHalf[i]
             i += 1
             k += 1
 
-        while j < len(right_half):
-            arr[k] = right_half[j]
+        while j < len(rightHalf):
+            arr[k] = rightHalf[j]
             j += 1
             k += 1
 
     return comparisons
 
 # Quick Sort Algorithm
-def quick_sort(arr):
-    comparisons = 0
-    if len(arr) <= 1:
+def quickSort(arr):
+    comparisons = 0 # set comparrison to 0 when function called
+    if len(arr) <= 1: # check to make sure array size is more than 1 because doesnt need sorting
         return comparisons
-    pivot = arr[len(arr) // 2]
-    left = [x for x in arr if x < pivot]
-    middle = [x for x in arr if x == pivot]
-    right = [x for x in arr if x > pivot]
+    pivot = arr[len(arr) // 2] # splitting array in half
+    left = [x for x in arr if x < pivot] # check if pivot goes into left half of split array
+    middle = [x for x in arr if x == pivot] # check if pivot goes into middle of split array
+    right = [x for x in arr if x > pivot] # check if pivot goes into right half of split array
     comparisons += len(arr) - len(left) - len(right)
-    comparisons += quick_sort(left)
-    comparisons += quick_sort(right)
+    comparisons += quickSort(left)
+    comparisons += quickSort(right)
     return comparisons
 
 # Function that calculates time and comparison amount
-def measure_performance(algorithm, array):
-    start_time = time.time()
-    comparisons = algorithm(array)
-    end_time = time.time()
-    execution_time = (end_time - start_time) * 1000  # Convert to milliseconds
-    return execution_time, comparisons
+def measurePerformance(algorithm, array):
+    startTime = time.time() # starting a timer
+    comparisons = algorithm(array) # getting the amount of comparrisons for graph use
+    endTime = time.time() # stopping timer
+    executionTime = (endTime - startTime) * 1000  # calcuculating time taken. Convert to milliseconds
+    return executionTime, comparisons
 
-# Create arrays
-HundredList = generate_random_array(100)
-ThousandList = generate_random_array(1000)
-TenThousandList = generate_random_array(10000)
-
-# Measure and analyze performance for each sorting algorithm and dataset size
-HundredList_selection = HundredList.copy()
-ThousandList_selection = ThousandList.copy()
-TenThousandList_selection = TenThousandList.copy()
-
-HundredList_merge = HundredList.copy()
-ThousandList_merge = ThousandList.copy()
-TenThousandList_merge = TenThousandList.copy()
-
-HundredList_quick = HundredList.copy()
-ThousandList_quick = ThousandList.copy()
-TenThousandList_quick = TenThousandList.copy()
-
-# Selection Sort
-time_selection, comparisons_selection = measure_performance(selection_sort, HundredList_selection)
-print(f"Selection Sort (HundredList): Execution Time: {time_selection} ms, Comparisons: {comparisons_selection}")
-
-time_selection, comparisons_selection = measure_performance(selection_sort, ThousandList_selection)
-print(f"Selection Sort (ThousandList): Execution Time: {time_selection} ms, Comparisons: {comparisons_selection}")
-
-time_selection, comparisons_selection = measure_performance(selection_sort, TenThousandList_selection)
-print(f"Selection Sort (TenThousandList): Execution Time: {time_selection} ms, Comparisons: {comparisons_selection}")
-
-print ("")
-
-# Merge Sort
-time_merge, comparisons_merge = measure_performance(merge_sort, HundredList_merge)
-print(f"Merge Sort (HundredList): Execution Time: {time_merge} ms, Comparisons: {comparisons_merge}")
-
-time_merge, comparisons_merge = measure_performance(merge_sort, ThousandList_merge)
-print(f"Merge Sort (ThousandList): Execution Time: {time_merge} ms, Comparisons: {comparisons_merge}")
-
-time_merge, comparisons_merge = measure_performance(merge_sort, TenThousandList_merge)
-print(f"Merge Sort (TenThousandList): Execution Time: {time_merge} ms, Comparisons: {comparisons_merge}")
-
-print ("")
-
-# Quick Sort
-time_quick, comparisons_quick = measure_performance(quick_sort, HundredList_quick)
-print(f"Quick Sort (HundredList): Execution Time: {time_quick} ms, Comparisons: {comparisons_quick}")
-
-time_quick, comparisons_quick = measure_performance(quick_sort, ThousandList_quick)
-print(f"Quick Sort (ThousandList): Execution Time: {time_quick} ms, Comparisons: {comparisons_quick}")
-
-time_quick, comparisons_quick = measure_performance(quick_sort, TenThousandList_quick)
-print(f"Quick Sort (TenThousandList): Execution Time: {time_quick} ms, Comparisons: {comparisons_quick}")
-
-print ("")
-print ("")
-
-# Function to create line chart for multiple algorithms
-def plot_multiple_algorithms(data_sizes, execution_times, comparisons, algorithm_names):
+# Function to create a line chart comparing the performance of multiple sorting algorithms
+def plotMultipleAlgorithms(dataSizes, executionTimes, comparisons, algorithmNames):
+    # Set up a figure for the plot with a specific size
     plt.figure(figsize=(10, 5))
 
-    # Plot execution times
+    # Plot execution times in the first subplot
     plt.subplot(1, 2, 1)
-    for exec_times, algorithm_name in zip(execution_times, algorithm_names):
-        plt.plot(data_sizes, exec_times, marker='x', label=algorithm_name)
+    for execTimes, algorithmName in zip(executionTimes, algorithmNames):
+        # Plot a line chart with data sizes on the x-axis and execution times on the y-axis
+        plt.plot(dataSizes, execTimes, marker='x', label=algorithmName)
+
+    # Set title and labels for the first subplot
     plt.title('Algorithm Performance')
     plt.xlabel('Array Size')
     plt.ylabel('Execution Time (ms)')
-    plt.legend()
+    plt.legend()  # Display legend to identify each algorithm
 
-    # Plot comparisons
+    # Plot comparisons in the second subplot
     plt.subplot(1, 2, 2)
-    for comps, algorithm_name in zip(comparisons, algorithm_names):
-        plt.plot(data_sizes, comps, marker='x', label=algorithm_name)
+    for comps, algorithmName in zip(comparisons, algorithmNames):
+        # Plot a line chart with data sizes on the x-axis and the number of comparisons on the y-axis
+        plt.plot(dataSizes, comps, marker='x', label=algorithmName)
+
+    # Set title and labels for the second subplot
     plt.title('Algorithm Comparisons')
     plt.xlabel('Array Size')
     plt.ylabel('Number of Comparisons')
-    plt.legend()
+    plt.legend()  # Display legend to identify each algorithm
 
-    plt.tight_layout()
+    plt.tight_layout()  # Adjust layout to prevent overlapping
     plt.show()
 
-# Function to run and plot sorting algorithm
-def run_and_plot_sorting_algorithm(algorithm, array, size):
-    array_copy = array.copy()
-    time, comparisons = measure_performance(algorithm, array_copy)
-    return time, comparisons
+# Function to run a sorting algorithm, measure its performance, and plot the results
+def runAndPlotSortingAlgorithm(algorithm, array, size):
+    arrayCopy = array.copy()  # Create a copy of the input array to preserve the original
+    time, comparisons = measurePerformance(algorithm, arrayCopy)  # Measure algorithm performance
+    return time, comparisons  # Return the execution time and number of comparisons
+
+# Array Setup
+arrayName = ["HundredList", "ThousandList", "TenThousandList"]
+arraySize = [100,1000,10000]
+
+# Create arrays
+arrays = {}  # Dictionary to store arrays
+
+for name, size in zip(arrayName, arraySize): # zip is used so that the loop can use data from both arrays 
+    arrays[name] = generateRandomArray(size)
+
+# Measure and analyse performance for each sorting algorithm and dataset size
+# copying each List for each type of sort
+
+selectionArrays = {name: array.copy() for name, array in arrays.items()}
+mergeArrays = {name: array.copy() for name, array in arrays.items()}
+quickArrays = {name: array.copy() for name, array in arrays.items()}
+
+#----------Calculating the time taken for each sort----------
+
+# Selection Sort
+for name, array in selectionArrays.items(): # in both arrays
+    timeSelection, comparisonsSelection = measurePerformance(selectionSort, array) # calls measurePerformance function
+    print(f"Selection Sort ({name}): Execution Time: {timeSelection} ms, Comparisons: {comparisonsSelection}")
+print("\n")
+
+# Merge Sort
+for name, array in mergeArrays.items():
+    timeMerge, comparisonsMerge = measurePerformance(mergeSort, array)
+    print(f"Merge Sort ({name}): Execution Time: {timeMerge} ms, Comparisons: {comparisonsMerge}")
+print("\n")
+
+# Quick Sort
+for name, array in quickArrays.items():
+    timeQuick, comparisonsQuick = measurePerformance(quickSort, array)
+    print(f"Quick Sort ({name}): Execution Time: {timeQuick} ms, Comparisons: {comparisonsQuick}")
+print("\n")
 
 # Run and store results
-execution_times_all = []
-comparisons_all = []
-for size in data_sizes:
-    execution_times = []
+executionTimesAll = []
+comparisonsAll = []
+
+for size in arraySize:
+    executionTimes = []
     comparisons = []
-    for algorithm, algorithm_name in zip(algorithms, algorithm_names):
-        array = generate_random_array(size)
-        exec_time, comparison = run_and_plot_sorting_algorithm(algorithm, array, size)
-        execution_times.append(exec_time)
+
+    for algorithm, name in zip([selectionSort, mergeSort, quickSort], arrayName):  # Update with the correct function names
+        array = generateRandomArray(size)
+        execTime, comparison = runAndPlotSortingAlgorithm(algorithm, array, size)
+        executionTimes.append(execTime)
         comparisons.append(comparison)
 
         # Print results for the current algorithm and array size
-        print(f"{algorithm_name} ({size} elements): Execution Time: {exec_time} ms, Comparisons: {comparison}")
+        #print(f"{name} ({size} elements): Execution Time: {execTime} ms, Comparisons: {comparison}")
 
     # Append results for the current array size
-    execution_times_all.append(execution_times)
-    comparisons_all.append(comparisons)
+    executionTimesAll.append(executionTimes)
+    comparisonsAll.append(comparisons)
 
 # Plot a single graph for all array sizes
-plot_multiple_algorithms(data_sizes, execution_times_all, comparisons_all, algorithm_names)
+plotMultipleAlgorithms(arraySize, executionTimesAll, comparisonsAll, arrayName)
+
+"""
+----------References----------
+
+Used For Plotting
+
+Matplotlib.org. (2023). Available at: https://matplotlib.org/cheatsheets/_images/handout-beginner.png.
+Matplotlib.org. (2023). Available at: https://matplotlib.org/cheatsheets/_images/handout-intermediate.png.
+www.w3schools.com. (n.d.). Matplotlib Pyplot. [online] Available at: https://www.w3schools.com/python/matplotlib_pyplot.asp.
+
+"""
+
