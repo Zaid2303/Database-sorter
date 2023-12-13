@@ -174,10 +174,6 @@ for name, array in quickArrays.items():
     quickComparisonsAll.append(comparisonsQuick)
 print("\n")
 
-# Run and store results
-executionTimesAll = []
-comparisonsAll = []
-
 # Plot a single graph for all array sizes using pervious information
 plotMultipleAlgorithms(arraySize, [selectionExecutionTimesAll, mergeExecutionTimesAll, quickExecutionTimesAll], [selectionComparisonsAll, mergeComparisonsAll, quickComparisonsAll], arrayName)
 
