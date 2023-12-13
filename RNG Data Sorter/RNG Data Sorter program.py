@@ -127,13 +127,11 @@ arraySize = [100,1000,10000]
 
 # Create arrays
 arrays = {}  # Dictionary to store arrays
-
-for name, size in zip(arrayName, arraySize): # zip is used so that the loop can use data from both arrays 
+for name, size in zip(arrayName, arraySize): # zip is used so that the loop can use data from both arrays
     arrays[name] = generateRandomArray(size)
 
 # Measure and analyse performance for each sorting algorithm and dataset size
 # copying each List for each type of sort
-
 selectionArrays = {name: array.copy() for name, array in arrays.items()}
 mergeArrays = {name: array.copy() for name, array in arrays.items()}
 quickArrays = {name: array.copy() for name, array in arrays.items()}
@@ -141,46 +139,47 @@ quickArrays = {name: array.copy() for name, array in arrays.items()}
 #----------Calculating the time taken for each sort----------
 
 # Selection Sort
+selectionExecutionTimesAll = []
+selectionComparisonsAll = []
+
 for name, array in selectionArrays.items(): # in both arrays
     timeSelection, comparisonsSelection = measurePerformance(selectionSort, array) # calls measurePerformance function
-    print(f"Selection Sort ({name}): Execution Time: {timeSelection} ms, Comparisons: {comparisonsSelection}")
+    print(f"Selection Sort ({name}): Execution Time: {timeSelection} ms, Comparisons: {comparisonsSelection}") # the f makes all the content in the {} into a string 
+    # for plotting
+    selectionExecutionTimesAll.append(timeSelection) # saves time taken into array for all 3 sorts
+    selectionComparisonsAll.append(comparisonsSelection) # saves all number of comparrison 
 print("\n")
 
 # Merge Sort
+mergeExecutionTimesAll = []
+mergeComparisonsAll = []
+
 for name, array in mergeArrays.items():
     timeMerge, comparisonsMerge = measurePerformance(mergeSort, array)
     print(f"Merge Sort ({name}): Execution Time: {timeMerge} ms, Comparisons: {comparisonsMerge}")
+    # for plotting
+    mergeExecutionTimesAll.append(timeMerge)
+    mergeComparisonsAll.append(comparisonsMerge)
 print("\n")
 
 # Quick Sort
+quickExecutionTimesAll = []
+quickComparisonsAll = []
+
 for name, array in quickArrays.items():
     timeQuick, comparisonsQuick = measurePerformance(quickSort, array)
     print(f"Quick Sort ({name}): Execution Time: {timeQuick} ms, Comparisons: {comparisonsQuick}")
+    
+    quickExecutionTimesAll.append(timeQuick)
+    quickComparisonsAll.append(comparisonsQuick)
 print("\n")
 
 # Run and store results
 executionTimesAll = []
 comparisonsAll = []
 
-for size in arraySize:
-    executionTimes = []
-    comparisons = []
-
-    for algorithm, name in zip([selectionSort, mergeSort, quickSort], arrayName):  # Update with the correct function names
-        array = generateRandomArray(size)
-        execTime, comparison = runAndPlotSortingAlgorithm(algorithm, array, size)
-        executionTimes.append(execTime)
-        comparisons.append(comparison)
-
-        # Print results for the current algorithm and array size
-        #print(f"{name} ({size} elements): Execution Time: {execTime} ms, Comparisons: {comparison}")
-
-    # Append results for the current array size
-    executionTimesAll.append(executionTimes)
-    comparisonsAll.append(comparisons)
-
-# Plot a single graph for all array sizes
-plotMultipleAlgorithms(arraySize, executionTimesAll, comparisonsAll, arrayName)
+# Plot a single graph for all array sizes using pervious information
+plotMultipleAlgorithms(arraySize, [selectionExecutionTimesAll, mergeExecutionTimesAll, quickExecutionTimesAll], [selectionComparisonsAll, mergeComparisonsAll, quickComparisonsAll], arrayName)
 
 """
 ----------References----------
